@@ -1,0 +1,55 @@
+begin
+com_file
+read p5354PresFilm3-21l
+
+# Date Run: 
+# Date Reduced: 24 June, 2020 
+# Run By: Wood, Manogharan, Riviere
+# Reduced By: Wood
+
+# Material: Stainless Steel L-shape insert
+
+
+###########################
+#
+#LabView stores time in column 1.  Move that to column 11 and move everything else up
+#
+math 1 * 1 = 5 Samp_period msec
+math 2 * 1 = 2 Hor_disp bit
+math 3 * 1 = 3 Hor_load bit
+math 5 / 10000 = 4 Samp_period s
+summation 4 4 Time sec
+
+r_col 5
+###########################
+
+# HORIZONTAL DISPLACEMENT
+# Horizontal Area = 0.0022387 m^2
+# (20/2^24)* 0.835981 *1000 = V/bit * mm/V * micrometer/mm = 9.965670108795166015625e-4 µm/bit
+math 2 * 0.0009965670108795166015625 = 2 hor_disp micron
+
+# HORIZONTAL STRESS
+# 1 surface * 1e3 kN/MN * 105.9 mV/kN * 2^24/20 bit/V
+# 1/(0.0022387*1e3*105.9e-3*(2^24)/20) = 5.02826595542415243e-6 [MPa/bit]
+math 3 * 5.02826595542415243e-6 = 3 HorStress MPa
+
+#MECHANICAL OFFSETS
+#----------------
+
+# VERT RAM NOT USED IN EXPERIMENT
+
+# HOR DISP
+#offset_int 3 1512 1541 y
+zero 2, 519 
+
+# HOR STRESS
+zero 3, 541 
+
+r_col 1
+
+#Binary Output
+write p5354_bin
+
+end
+
+
